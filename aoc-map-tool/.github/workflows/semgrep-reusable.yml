@@ -1,0 +1,163 @@
+name: Semgrep SAST (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      checkout_ref:
+        description: "What to check out (branch/tag/SHA)"
+        required: true
+        type: string
+      scan_mode:
+        description: "full or diff"
+        required: true
+        type: string
+      baseline_sha:
+        description: "Baseline SHA for diff scan (required when scan_mode=diff)"
+        required: false
+        type: string
+        default: ""
+      branch_label:
+        description: "Human-readable branch/tag name, used in the report and S3 key"
+        required: true
+        type: string
+      semgrep_config:
+        description: "Semgrep config/ruleset"
+        required: false
+        type: string
+        default: "p/owasp-top-ten"
+      fail_on_severity:
+        description: "Minimum severity that fails the build (ERROR = critical/high)"
+        required: false
+        type: string
+        default: "ERROR"
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_REGION:
+        required: true
+    outputs:
+      findings_total:
+        description: "Total number of findings"
+        value: ${{ jobs.scan.outputs.findings_total }}
+      findings_blocking:
+        description: "Number of blocking findings (>= fail_on_severity)"
+        value: ${{ jobs.scan.outputs.findings_blocking }}
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+env:
+  S3_BUCKET: aoc-semgrep-sast-reports
+
+jobs:
+  scan:
+    name: Semgrep scan (${{ inputs.scan_mode }})
+    runs-on: ubuntu-latest
+    outputs:
+      findings_total: ${{ steps.gate.outputs.findings_total }}
+      findings_blocking: ${{ steps.gate.outputs.findings_blocking }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.checkout_ref }}
+          fetch-depth: 0
+
+      - name: Install Semgrep
+        run: pip install --upgrade semgrep
+
+      - name: Run Semgrep (full)
+        if: inputs.scan_mode == 'full'
+        env:
+          SEMGREP_RULE_CONFIG: ${{ inputs.semgrep_config }}
+        run: |
+          semgrep scan \
+            --config "$SEMGREP_RULE_CONFIG" \
+            --text \
+            --json-output=semgrep-results.json \
+            --sarif-output=semgrep-results.sarif \
+            --metrics=off \
+            --error \
+            .
+        continue-on-error: true
+
+      - name: Run Semgrep (diff / touched files only)
+        if: inputs.scan_mode == 'diff'
+        env:
+          SEMGREP_RULE_CONFIG: ${{ inputs.semgrep_config }}
+          SEMGREP_BASELINE_SHA: ${{ inputs.baseline_sha }}
+        run: |
+          semgrep scan \
+            --config "$SEMGREP_RULE_CONFIG" \
+            --baseline-commit="$SEMGREP_BASELINE_SHA" \
+            --text \
+            --json-output=semgrep-results.json \
+            --sarif-output=semgrep-results.sarif \
+            --metrics=off \
+            --error \
+            .
+        continue-on-error: true
+
+      - name: Prepare S3 key
+        id: meta
+        env:
+          BRANCH_LABEL: ${{ inputs.branch_label }}
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: |
+          SAFE_BRANCH=$(echo "$BRANCH_LABEL" | tr '/' '-')
+          TIMESTAMP=$(date -u +"%Y%m%dT%H%M%SZ")
+          echo "safe_branch=${SAFE_BRANCH}" >> "$GITHUB_OUTPUT"
+          echo "timestamp=${TIMESTAMP}" >> "$GITHUB_OUTPUT"
+          echo "s3_key=sast-reports/${REPO_NAME}/${SAFE_BRANCH}_${TIMESTAMP}.json" >> "$GITHUB_OUTPUT"
+
+      - name: Configure AWS credentials
+        if: always()
+        run: |
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "AWS_DEFAULT_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
+
+      - name: Upload JSON report to S3
+        if: always()
+        run: |
+          if [ -f semgrep-results.json ]; then
+            aws s3 cp semgrep-results.json "s3://${{ env.S3_BUCKET }}/${{ steps.meta.outputs.s3_key }}"
+            echo "Report uploaded: s3://${{ env.S3_BUCKET }}/${{ steps.meta.outputs.s3_key }}"
+          else
+            echo "::warning::semgrep-results.json not found, nothing uploaded"
+          fi
+
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep-results.sarif
+        if: always()
+
+      - name: Severity gate (fail build on critical/high)
+        id: gate
+        env:
+          FAIL_SEVERITY: ${{ inputs.fail_on_severity }}
+        run: |
+          if [ ! -f semgrep-results.json ]; then
+            echo "::error::Semgrep results file missing, treating as failure"
+            exit 1
+          fi
+
+          TOTAL=$(jq '.results | length' semgrep-results.json)
+          BLOCKING=$(jq --arg sev "$FAIL_SEVERITY" \
+            '[.results[] | select(.extra.severity == $sev)] | length' semgrep-results.json)
+
+          echo "findings_total=${TOTAL}" >> "$GITHUB_OUTPUT"
+          echo "findings_blocking=${BLOCKING}" >> "$GITHUB_OUTPUT"
+
+          echo "Total findings: ${TOTAL}"
+          echo "Blocking findings (severity=${FAIL_SEVERITY}): ${BLOCKING}"
+
+          if [ "${BLOCKING}" -gt 0 ]; then
+            echo "::error::Found ${BLOCKING} findings with severity=${FAIL_SEVERITY}. Failing the pipeline."
+            exit 1
+          fi

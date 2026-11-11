@@ -1,0 +1,54 @@
+name: Pull Request check
+on:
+  pull_request:
+    branches: [master]
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+      - name: Create Database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+      # - name: PHP Syntax Check
+      #   uses: overtrue/phplint@8.1
+      #   with:
+      #     path: .
+      #     options: --exclude=*.log --exclude=vendor
+      # - name: Install PHPCS
+      #   env:
+      #     DB_CONNECTION: sqlite
+      #     DB_DATABASE: database/database.sqlite
+      #   run: composer require squizlabs/php_codesniffer
+      - name: Execute Code Static Analysis (PHP Stan + Larastan)
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: |
+          php artisan key:generate
+          composer require --dev nunomaduro/larastan
+          vendor/bin/phpstan analyse
+        # continue-on-error: true
+      # - name: PHP CS Checking
+      #   run: composer sniff
+      #   continue-on-error: true
+      # - name: PHP CS Auto Fixer
+      #   run: composer lint
+      # - uses: stefanzweifel/git-auto-commit-action@v4
+      #   with:
+      #     commit_message: Apply php-cs-fixer changes

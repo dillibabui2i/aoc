@@ -1,0 +1,23 @@
+name: Semgrep - Pull Request (diff scan)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  semgrep:
+    uses: ./.github/workflows/semgrep-reusable.yml
+    with:
+      checkout_ref: ${{ github.event.pull_request.head.sha }}
+      scan_mode: diff
+      baseline_sha: ${{ github.event.pull_request.base.sha }}
+      branch_label: ${{ github.head_ref }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}

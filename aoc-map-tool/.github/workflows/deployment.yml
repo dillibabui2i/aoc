@@ -1,0 +1,176 @@
+name: Deploy Laravel App
+
+run-name: Deploy to ${{ github.event.inputs.environment || github.ref_name }}
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: true
+        type: choice
+        options:
+          - uat
+          - uat-no-downtime
+          - prod
+          - prod-no-downtime
+  
+permissions:
+  contents: read
+  packages: read
+  
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+
+    outputs:
+      runner_label: ${{ steps.set-label.outputs.runner_label }}
+      secret_id: ${{ steps.set-label.outputs.secret_id }}
+      workdir: ${{ steps.set-label.outputs.workdir }}
+      no_downtime: ${{ steps.set-label.outputs.no_downtime }}
+
+    steps:
+      - name: Set runner label, secret ID, workdir and deploy mode
+        id: set-label
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref }}
+          DEPLOY_ENV: ${{ github.event.inputs.environment }}
+        run: |
+          case "$DEPLOY_ENV" in
+            uat-no-downtime)
+              BASE_ENV="uat"
+              NO_DOWNTIME="true"
+              ;;
+            prod-no-downtime)
+              BASE_ENV="prod"
+              NO_DOWNTIME="true"
+              ;;
+            uat|prod)
+              BASE_ENV="$DEPLOY_ENV"
+              NO_DOWNTIME="false"
+              ;;
+            *)
+              BASE_ENV=""
+              NO_DOWNTIME="false"
+              ;;
+          esac
+ 
+          if [[ "$EVENT_NAME" == "push" && "$REF_NAME" == "refs/heads/dev" ]]; then
+                echo "runner_label=AOC-dev-test2-runner" >> $GITHUB_OUTPUT
+                echo "secret_id=aoc-map-tool-test2-instance-plaintext" >> $GITHUB_OUTPUT
+                echo "workdir=/home/test2-angelsofcareapp-com/portal" >> $GITHUB_OUTPUT
+                echo "no_downtime=false" >> $GITHUB_OUTPUT
+          elif [[ "$EVENT_NAME" == "workflow_dispatch" && "$REF_NAME" == "refs/heads/main" && "$BASE_ENV" == "uat" ]]; then
+                echo "runner_label=AOC-uat-runner" >> $GITHUB_OUTPUT
+                echo "secret_id=aoc-map-tool-uat-instance-plaintext" >> $GITHUB_OUTPUT
+                echo "workdir=/home/test-angelsofcareapp-com/portal" >> $GITHUB_OUTPUT
+                echo "no_downtime=$NO_DOWNTIME" >> $GITHUB_OUTPUT
+          elif [[ "$EVENT_NAME" == "workflow_dispatch" && "$REF_NAME" == "refs/heads/main" && "$BASE_ENV" == "prod" ]]; then
+                echo "runner_label=AOC-prod-runner" >> $GITHUB_OUTPUT
+                echo "secret_id=aoc-map-tool-prod-instance-plaintext" >> $GITHUB_OUTPUT
+                echo "workdir=/home/angelsofcareapp-com/portal" >> $GITHUB_OUTPUT
+                echo "no_downtime=$NO_DOWNTIME" >> $GITHUB_OUTPUT
+          else
+                echo "Invalid trigger, branch or environment."
+                exit 1
+          fi
+
+  deploy:
+    needs: prepare
+    runs-on: ${{ needs.prepare.outputs.runner_label }}
+
+    env:
+      SECRET_ID: ${{ needs.prepare.outputs.secret_id }}
+      WORKDIR: ${{ needs.prepare.outputs.workdir }}
+      NO_DOWNTIME: ${{ needs.prepare.outputs.no_downtime }}
+
+    steps:
+      - name: Configure AWS credentials
+        run: |
+           echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+           echo "AWS_DEFAULT_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
+
+      - name: Update code from GitHub
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          echo "Current branch:"
+          git branch --show-current
+          git pull origin $(git branch --show-current)
+
+      - name: Download fresh .env from AWS Secrets Manager
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          rm -f .env
+          aws secretsmanager get-secret-value \
+            --secret-id $SECRET_ID \
+            --query SecretString \
+            --output text > .env
+          ls -la .env
+
+      - name: Install PHP dependencies
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          export COMPOSER_MEMORY_LIMIT=-1
+          composer install --no-interaction --prefer-dist --no-progress
+ 
+      - name: Enable maintenance mode (downtime deploys only)
+        if: env.NO_DOWNTIME != 'true'
+        working-directory: ${{ env.WORKDIR }}
+        run: php artisan down || true
+
+      - name: Laravel Artisan commands (pre assets)
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          php artisan migrate --force
+          php artisan process:permissions
+          php artisan process:featureflags
+
+      - name: Install Node dependencies
+        working-directory: ${{ env.WORKDIR }}
+        run: npm install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compile frontend assets
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          npx mix --production
+          npm run production
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Copy compiled assets
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          cp -R public/js .
+          cp -R public/css .
+          cp -R public/images .
+          cp -R resources/images .
+
+      - name: Final Laravel commands (downtime deploy)
+        if: env.NO_DOWNTIME != 'true'
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          php artisan cache:clear
+          php artisan optimize:clear
+          php artisan config:clear
+          php artisan view:cache
+          composer dump-autoload --no-interaction
+          php artisan up
+
+      - name: Final Laravel commands (zero-downtime deploy)
+        if: env.NO_DOWNTIME == 'true'
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          composer dump-autoload --no-interaction
+
+      - name: Restart services (downtime deploy)
+        if: env.NO_DOWNTIME != 'true'
+        run: |
+          sudo systemctl restart php8.2-fpm.service
+          sudo systemctl restart nginx.service

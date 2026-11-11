@@ -1,0 +1,140 @@
+.login-page {
+    color: rgba(0, 0, 0, 0.87);
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.43;
+    background-color: #fff;
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+.login-page .container {
+    min-width: 300px;
+    min-height: 100px;
+    height: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    overflow: auto;
+    text-align: center;
+    margin-top: 0;
+    max-width: 100%;
+    padding: 0;
+}
+
+.login-cnt {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    overflow: auto;
+    flex-flow: row wrap;
+    min-width: 350px;
+}
+
+.login-page .left-side {
+    flex: 1;
+    display: flex;
+    position: relative;
+    flex-flow: column;
+    min-width: 350px;
+    padding: 0;
+}
+
+.login-page .left-side .login-row {
+    flex: 1;
+    display: flex;
+    padding: 24px 16px;
+    flex-flow: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-sec-row {
+    margin: 40px;
+}
+
+.login-page form {
+    width: 80%;
+}
+
+.login-page .logo img {
+    max-width: 230px;
+    margin-bottom: 35px;
+}
+
+.right-side {
+    background-size: cover;
+    flex: 1;
+    display: flex;
+    padding: 16px 32px;
+    flex-flow: row;
+    min-width: 350px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px -5px 7px 0px rgb(0 0 0 / 50%) inset;
+    background-image: url("../images/MicrosoftTeams-image.png");
+}
+
+.content-box {
+    flex: 1 0 100%;
+    max-width: 450px;
+}
+
+.inner-content {
+    flex: 1;
+    padding: 8px;
+    min-width: 350px;
+    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+    color: rgba(0, 0, 0, 0.87);
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    background-color: #fff;
+}
+
+.inner-content h2 {
+    padding: 8px 8px;
+    /* font-weight: 600; */
+    color: #215eac;
+    font-family: "Baloo 2", "Roboto";
+}
+
+.inner-content .content-cnt {
+    padding: 8px 8px;
+    overflow: auto;
+    word-wrap: break-word;
+    font-size: 16px;
+    font-family: "Roboto", sans-serif;
+    color: #4d4d4f;
+}
+
+.learn-more {
+    padding-top: 8px;
+}
+
+.learn-more a {
+    padding: 8px 11px;
+    font-size: 0.9375rem;
+}
+
+.btn-info,
+.btn {
+    background-color: #2f5baa;
+    border-color: #6cb2eb;
+    color: #fff;
+}
+
+a {
+    background-color: transparent;
+    color: #2f5baa !important;
+    text-decoration: none;
+}
+
+.btn {
+    border-radius: 0px;
+}
+
+.login-sec-row p {
+    font-size: 10px;
+}

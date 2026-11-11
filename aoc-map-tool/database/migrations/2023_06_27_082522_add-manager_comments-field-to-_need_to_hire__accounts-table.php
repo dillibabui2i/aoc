@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class AddManagerCommentsFieldToNeedToHireAccountsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('NeedToHire_Accounts', function (Blueprint $table) {
+            $table->text('manager_comments')->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('NeedToHire_Accounts', function (Blueprint $table) {
+            $table->dropColumn('manager_comments');
+        });
+    }
+}

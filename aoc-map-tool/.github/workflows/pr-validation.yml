@@ -1,0 +1,99 @@
+name: Branch, PR, and Commit Validation
+
+permissions:
+  pull-requests: write
+  contents: read
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  pr-checks:
+    env:
+      GH_TOKEN: ${{ github.token }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate branch, PR title & commits
+        id: validate
+        run: |
+          errors=""
+
+          # === Get branch name ===
+          BRANCH_NAME=$(jq -r .pull_request.head.ref "$GITHUB_EVENT_PATH")
+          echo "Branch name: $BRANCH_NAME"
+
+          # === Detect release branches ===
+          IS_RELEASE_BRANCH=false
+          if [[ "$BRANCH_NAME" =~ ^(origin/)?release/[0-9]{4}Q[1-4]\.[0-9]+$ ]]; then
+            IS_RELEASE_BRANCH=true
+            echo "ℹ️ Release branch detected ($BRANCH_NAME). Skipping branch-name & PR title validation."
+          fi
+
+          # === Check branch name (skip for release branches) ===
+          if [[ "$IS_RELEASE_BRANCH" == "false" ]]; then
+            if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix)/[A-Z]+-[0-9]+_[a-zA-Z0-9_-]+$ ]] && \
+               [[ ! "$BRANCH_NAME" =~ ^(hotfix|rcfix)/[0-9]{4}[1-4]\.[0-9]+$ ]]; then
+              errors+="❌ Invalid branch name: $BRANCH_NAME\nMust follow one of these patterns:\n"
+              errors+="- feature/{TICKET_ID}_{title}: feature/AOC-213_login_fixes\n"
+              errors+="- bugfix/{TICKET_ID}_{title}: bugfix/AOC-214_auth_bug\n"
+              errors+="- hotfix/{YYYY}{Q}.{sequence}: hotfix/20241.5\n"
+              errors+="- rcfix/{YYYY}{Q}.{sequence}: rcfix/20242.1\n\n"
+            fi
+          fi
+
+          # === Check PR title (skip for release branches) ===
+          PR_TITLE=$(jq -r .pull_request.title "$GITHUB_EVENT_PATH")
+          echo "PR title: $PR_TITLE"
+
+          if [[ "$IS_RELEASE_BRANCH" == "false" ]]; then
+            if [[ ! "$PR_TITLE" =~ ^[A-Z]+-[0-9]+\ \|\ .+ ]]; then
+              errors+="❌ Invalid PR title: $PR_TITLE\nMust follow:\n- TASK_ID | Title\nExample: AOC-213 | Extra fixes\n\n"
+            fi
+          fi
+
+          # === Check commits ===
+          REPO=$(jq -r .repository.full_name "$GITHUB_EVENT_PATH")
+          PR_NUMBER=$(jq -r .pull_request.number "$GITHUB_EVENT_PATH")
+
+          commits=$(gh api repos/$REPO/pulls/$PR_NUMBER/commits --jq '.[].commit.message')
+          while IFS= read -r commit; do
+            # Ignore merge commits
+            if [[ "$commit" =~ ^Merge\  ]]; then
+              echo "ℹ️ Skipping merge commit: $commit"
+              continue
+            fi
+
+            # Validate commit message format
+            if [[ ! "$commit" =~ ^[A-Z]+-[0-9]+\ \|\ .+ ]]; then
+              errors+="⚠️ Invalid commit message: $commit\nMust follow: TASK_ID | Commit message\nExample: AOC-213 | Fix login bug\n\n"
+            fi
+          done <<< "$commits"
+
+          # Export errors for next step
+          echo "errors<<EOF" >> $GITHUB_ENV
+          echo -e "$errors" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Update or create PR comment
+        if: env.errors != ''
+        run: |
+          REPO=${{ github.repository }}
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          BODY=$(cat <<'EOF'
+          ${{ env.errors }}
+          EOF
+          )
+          # Look for an existing bot comment
+          comment_id=$(gh api repos/$REPO/issues/$PR_NUMBER/comments \
+            --jq '.[] | select(.user.login == "github-actions[bot]") | select(.body | contains("Invalid")) | .id' | head -n 1)
+
+          if [[ -n "$comment_id" ]]; then
+            echo "Updating existing comment $comment_id"
+            gh api repos/$REPO/issues/comments/$comment_id -X PATCH -f body="$BODY"
+          else
+            echo "Creating new comment"
+            gh pr comment $PR_NUMBER --body "$BODY"
+          fi

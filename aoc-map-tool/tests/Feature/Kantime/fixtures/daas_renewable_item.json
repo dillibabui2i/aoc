@@ -1,0 +1,16 @@
+{
+    "LastModified": "2026-07-30 10:15:00",
+    "UNIQUE_KEY": "5-key",
+    "HHA": 12,
+    "ISVALIDRECORD": "true",
+    "RENEW_CLINICIAN_ID": "3001",
+    "ProviderID": "5077",
+    "expiration_date": "2027-03-01",
+    "renewable_item_id": 9101,
+    "issued_date": "2023-03-01",
+    "mandatory": true,
+    "renewables_type": 5,
+    "renew_item": "777",
+    "license_no": "RN-778899",
+    "license_state": "TX"
+}

@@ -1,0 +1,15 @@
+node_modules/
+vendor/
+dist/
+build/
+target/
+.venv/
+venv/
+
+**/*.min.js
+**/generated/
+**/*.pb.go
+**/migrations/
+
+.git/
+.github/

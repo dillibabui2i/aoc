@@ -1,0 +1,30 @@
+name: Semgrep - Full scan (main / release / manual)
+
+on:
+  push:
+    branches:
+      - main
+      - "release/**"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch or tag to scan (manual run only)"
+        required: true
+        default: "main"
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  semgrep:
+    uses: ./.github/workflows/semgrep-reusable.yml
+    with:
+      checkout_ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.ref || github.sha }}
+      scan_mode: full
+      branch_label: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.ref || github.ref_name }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}

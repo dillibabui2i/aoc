@@ -1,0 +1,52 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('temp_number', function (Blueprint $table) {
+            $table->id();
+            $table->integer('num')->nullable();
+        });
+
+        DB::table('temp_number')->insert([
+            ['num' => '1'],
+            ['num' => '2'],
+            ['num' => '3'],
+            ['num' => '4'],
+            ['num' => '5'],
+            ['num' => '6'],
+            ['num' => '7'],
+            ['num' => '8'],
+            ['num' => '9'],
+            ['num' => '10'],
+            ['num' => '11'],
+            ['num' => '12'],
+            ['num' => '13'],
+            ['num' => '14'],
+            ['num' => '15'],
+            ['num' => '16'],
+            ['num' => '17'],
+
+        ]);
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('temp_number_table_coverage_clinicain');
+    }
+};

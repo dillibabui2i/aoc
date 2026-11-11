@@ -1,0 +1,196 @@
+@use 'tokens' as *;
+
+// The design system leaves `.ui-btn--primary` in its own palette; VBC uses the
+// square, darker blue button from the All Hospitalizations page everywhere.
+@mixin primary-button {
+    .ui-btn--primary,
+    .ui-btn:not(.ui-btn--secondary) {
+        background: $primary;
+        border-color: $primary-border;
+        color: #fff;
+        border-radius: 0;
+        font-family: $font;
+        font-weight: 400;
+    }
+
+    .ui-btn--primary:hover:not(:disabled),
+    .ui-btn:not(.ui-btn--secondary):hover:not(:disabled) {
+        background: $primary-hover;
+        border-color: $primary-hover-border;
+    }
+}
+
+// `.ui-input-wrap` & friends carry no layout of their own — their label and
+// control are inline elements that only stack by accident when the column is
+// narrow. Anywhere VBC lays fields out on a grid, stacking must be explicit and
+// the control must fill its column instead of using its intrinsic width.
+@mixin stacked-fields {
+    .ui-input-wrap,
+    .ui-select-wrap,
+    .ui-datepicker-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        width: 100%;
+    }
+
+    // The label+input pair lives in `.ui-datepicker__row` (a child of
+    // `.ui-datepicker-wrap` above, added for the design system's `error`
+    // prop support), not directly in `.ui-datepicker-wrap` — same column
+    // stacking, one level deeper, or the label sits beside the input
+    // instead of above it.
+    .ui-datepicker__row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        width: 100%;
+    }
+
+    .ui-input,
+    .ui-select,
+    .ui-datepicker__input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    // `label` is a real `<label>` tag (UiInput/UiSelect) and picks up the page's global bootstrap
+    // `label { margin-bottom: .5rem }` — `.ui-datepicker__label` is a plain `<span>` and never had that
+    // margin, so a `UiInput`/`UiDateTimepicker` pair side by side in the same row had their inputs land
+    // ~8px apart despite both labels sitting flush with the row's top.
+    label,
+    .ui-datepicker__label,
+    .form-label {
+        margin: 0;
+        font-size: $text-base;
+        color: $text;
+    }
+
+    // Checkboxes and radios are deliberately excluded: this is about text-entry
+    // controls filling their column. A 38px checkbox is what made the
+    // multiselect's option rows twice the height they are on the filter bars.
+    input:not([type='checkbox']):not([type='radio']),
+    select {
+        height: $control-height;
+        font-size: $text-base;
+    }
+
+    // The design system reserves 32px on the right of every text input for a
+    // background icon it never actually draws. On a field as wide as a formatted
+    // date-time that dead space is enough to clip the last characters, so the
+    // padding is evened up.
+    .ui-input {
+        padding-right: 12px;
+    }
+
+    // The design system draws the date/time control as one bordered box with the
+    // label as a grey prefix segment inside it — the border/fixed-height/row-layout
+    // actually live on `.ui-datepicker__row` (the wrapper itself carries none of
+    // that), so overriding only `.ui-datepicker-wrap` is a no-op and the row still
+    // renders label-beside-input. VBC forms put labels above their field, so the
+    // frame moves from the row onto the input and the label becomes a plain label
+    // stacked above it, like every other field.
+    .ui-datepicker-wrap {
+        height: auto;
+        overflow: visible;
+    }
+
+    .ui-datepicker__row {
+        height: auto;
+        border: none;
+        border-radius: 0;
+        overflow: visible;
+        background: none;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    // The design system's `.ui-datepicker__row` (added for its `error` prop
+    // support) carries the frame now, not `.ui-datepicker-wrap` — reset the
+    // same frame properties one level deeper, so the border still ends up on
+    // `.ui-datepicker__input` alone. Its own row layout (label beside input,
+    // vertically centered) stays untouched.
+    .ui-datepicker__row {
+        height: auto;
+        border: none;
+        border-radius: 0;
+        overflow: visible;
+        background: none;
+        align-items: stretch;
+    }
+
+    .ui-datepicker__label {
+        padding: 0;
+        height: auto;
+        background: none;
+        border-right: none;
+    }
+
+    .ui-datepicker__input {
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        padding: 0 12px;
+    }
+
+    // The design system's own `error`/`required` state paints `.ui-datepicker__row`
+    // red (`.ui-datepicker__row--error`), but the frame moved to
+    // `.ui-datepicker__input` above, so that rule now has no border left to color —
+    // repaint it here instead, wherever a field passes `:error` to the picker.
+    .ui-datepicker__row--error .ui-datepicker__input {
+        border-color: $danger;
+    }
+}
+
+// Read-only fields read as "this mirrors the client record", not as a broken
+// input, so they are filled grey and borderless rather than white.
+@mixin readonly-fields {
+    input:disabled,
+    select:disabled,
+    textarea:disabled,
+    // The multiselect (Care Requirements) renders its trigger as a <button>,
+    // not an <input>/<select>, so it needs its own selector — otherwise it
+    // keeps the design system's own grey ($color-gray-50) instead of ours.
+    .ui-multiselect__trigger:disabled {
+        background-color: $field-disabled;
+        border-color: $field-disabled;
+        color: $text;
+        opacity: 1;
+        cursor: default;
+    }
+}
+
+@mixin module-typography {
+    font-family: $font;
+
+    input,
+    select,
+    textarea,
+    label,
+    button {
+        font-family: $font;
+    }
+}
+
+// The design system's multiselect, as VBC wants it everywhere it appears: the
+// dropdown sizes to its longest option instead of wrapping every row onto two
+// lines, and the rows are compact so the panel stays short. Shared by the filter
+// bars and the modals — the two used to differ only because these rules lived
+// under the filters' root selector.
+@mixin multiselect {
+    .ui-multiselect__dropdown {
+        width: max-content;
+        min-width: 100%;
+        max-width: $dropdown-max-width;
+        overflow-x: hidden;
+    }
+
+    .ui-multiselect__option {
+        white-space: nowrap;
+        padding: 0 10px;
+    }
+
+    .ui-multiselect__trigger,
+    .ui-multiselect__option {
+        font-family: $font;
+    }
+}

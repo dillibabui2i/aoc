@@ -1,0 +1,1 @@
+export {default as UITextArea} from './UITextArea.vue'

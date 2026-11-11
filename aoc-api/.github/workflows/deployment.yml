@@ -1,0 +1,122 @@
+name: Deploy Laravel App
+
+run-name: Deploy to ${{ github.event.inputs.environment || github.ref_name }}
+
+on:
+  push:
+    branches:
+      - development
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment (uat/prod)"
+        required: true
+        type: choice
+        options:
+          - uat
+          - prod
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+
+    outputs:
+      runner_label: ${{ steps.set-label.outputs.runner_label }}
+      secret_id: ${{ steps.set-label.outputs.secret_id }}
+      workdir: ${{ steps.set-label.outputs.workdir }}
+
+    steps:
+      - name: Set runner label, secret ID and workdir
+        id: set-label
+        run: |
+          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/development" ]]; then
+                echo "runner_label=AOC-dev-test2-runner" >> $GITHUB_OUTPUT
+                echo "secret_id=aoc-api-test2-instance-plaintext" >> $GITHUB_OUTPUT
+                echo "workdir=/home/test2-angelsofcareapp-com/aoc-api" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.ref }}" == "refs/heads/main" && "${{ github.event.inputs.environment }}" == "uat" ]]; then
+                echo "runner_label=AOC-uat-runner" >> $GITHUB_OUTPUT
+                echo "secret_id=aoc-api-uat-instance-plaintext" >> $GITHUB_OUTPUT
+                echo "workdir=/home/test-angelsofcareapp-com/api" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.ref }}" == "refs/heads/main" && "${{ github.event.inputs.environment }}" == "prod" ]]; then
+                echo "runner_label=AOC-prod-runner" >> $GITHUB_OUTPUT
+                echo "secret_id=aoc-api-prod-instance-plaintext" >> $GITHUB_OUTPUT
+                echo "workdir=/home/angelsofcareapp-com/api" >> $GITHUB_OUTPUT
+          else
+                echo "Invalid trigger or branch."
+                exit 1
+          fi
+
+
+  deploy:
+    needs: prepare
+    runs-on: ${{ needs.prepare.outputs.runner_label }}
+
+    env:
+      SECRET_ID: ${{ needs.prepare.outputs.secret_id }}
+      WORKDIR: ${{ needs.prepare.outputs.workdir }}
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          
+      - name: Prepare storage directories
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          mkdir -p storage/framework/{cache,sessions,testing,views}
+          chmod -R 775 storage
+
+      - name: Update code from GitHub
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          echo "Current branch:"
+          git branch --show-current
+          git pull origin $(git branch --show-current)
+
+      - name: Download fresh .env from AWS Secrets Manager
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          rm -f .env
+          aws secretsmanager get-secret-value \
+            --secret-id $SECRET_ID \
+            --query SecretString \
+            --output text > .env
+          ls -la .env
+
+      - name: Install PHP dependencies
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          export COMPOSER_MEMORY_LIMIT=-1
+          composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Laravel Artisan commands (pre assets)
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          php artisan down || true
+          php artisan clear-compiled
+          php artisan migrate --force
+
+      - name: Install Node dependencies
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          npm install
+          npx mix --production
+          npm run production
+
+      - name: Final Laravel commands
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          php artisan cache:clear
+          php artisan optimize:clear
+          php artisan config:clear
+          composer dump-autoload --no-interaction
+          php artisan up
+
+      - name: Restart php-fpm and nginx
+        working-directory: ${{ env.WORKDIR }}
+        run: |
+          sudo systemctl restart php8.2-fpm.service
+          sudo systemctl restart nginx.service

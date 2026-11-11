@@ -1,0 +1,77 @@
+// ─── Colors ───────────────────────────────────────────────────────────────────
+
+// Primary (blue)
+$color-primary-50: #eff6ff;
+$color-primary-100: #dbeafe;
+$color-primary: #2563eb;
+$color-primary-700: #1d4ed8;
+
+// Danger (red)
+$color-danger-50: #fef2f2;
+$color-danger-200: #fecaca;
+$color-danger: #dc2626;
+$color-danger-700: #b91c1c;
+
+// Success (green)
+$color-success-100: #dcfce7;
+$color-success: #22c55e;
+$color-success-700: #15803d;
+
+// Warning (amber)
+$color-warning-100: #fef3c7;
+$color-warning-700: #92400e;
+
+// Neutral (slate)
+$color-white: #ffffff;
+$color-gray-50: #f8fafc;
+$color-gray-100: #f1f5f9;
+$color-gray-200: #e2e8f0;
+$color-gray-300: #cbd5e1;
+$color-gray-400: #94a3b8;
+$color-gray-500: #64748b;
+$color-gray-600: #475569;
+$color-gray-700: #334155;
+$color-gray-800: #1e293b;
+$color-gray-900: #0f172a;
+
+// Role badge colors
+$color-role-admin-bg: #fef3c7;
+$color-role-admin-text: #92400e;
+$color-role-editor-bg: #ede9fe;
+$color-role-editor-text: #5b21b6;
+$color-role-viewer-bg: $color-gray-100;
+$color-role-viewer-text: $color-gray-600;
+
+// ─── Spacing ──────────────────────────────────────────────────────────────────
+
+$space-1: 4px;
+$space-1-5: 6px;
+$space-2: 8px;
+$space-2-5: 10px;
+$space-3: 12px;
+$space-3-5: 14px;
+$space-4: 16px;
+$space-5: 20px;
+$space-5-5: 22px;
+$space-6: 24px;
+$space-8: 32px;
+
+// ─── Typography ───────────────────────────────────────────────────────────────
+
+$font-sans: system-ui, -apple-system, sans-serif;
+
+$text-xs: 12px;
+$text-sm: 14px;
+$text-base: 16px;
+$text-xl: 20px;
+
+// ─── Borders ──────────────────────────────────────────────────────────────────
+
+$radius-sm: 4px;
+$radius-md: 6px;
+$radius-lg: 8px;
+$radius-full: 9999px;
+
+// ─── Transitions ──────────────────────────────────────────────────────────────
+
+$transition-fast: 0.15s ease;

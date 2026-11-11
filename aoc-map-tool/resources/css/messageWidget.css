@@ -1,0 +1,326 @@
+.chat-btn {
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    cursor: pointer
+}
+
+.chat-btn .close {
+    display: none
+}
+
+.chat-btn i {
+    transition: all 0.9s ease;
+    margin-right:0px;
+}
+
+#check:checked~.chat-btn i {
+    display: block;
+    pointer-events: auto;
+    transform: rotate(180deg)
+}
+
+#check:checked~.chat-btn .comment {
+    display: none
+}
+
+.chat-btn i {
+    font-size: 22px;
+    color: #fff !important
+}
+
+.chat-btn {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+    background-color: #215eac;
+    color: #fff;
+    font-size: 22px;
+    border: none
+}
+
+.chat-widget.wrapper {
+    position: fixed;
+    right: 20px;
+    bottom: 100px;
+    width: 340px;
+    background-color: #fff;
+    border-radius: 5px;
+    display: none;
+    transition: all 0.4s;
+    border: 1px solid #ddd;
+}
+
+#check:checked~.wrapper.chat-widget {
+    opacity: 1
+}
+
+.chat-widget .header {
+    padding: 13px;
+    background-color: #215eac;
+    border-radius: 5px 5px 0px 0px;
+    color: #fff;
+    height: auto;
+}
+
+.chat-widget .chat-form {
+    padding: 15px
+}
+
+.chat-widget .chat-form input,
+.chat-widget .chat-form textarea,
+.chat-widget .chat-form button {
+    margin-bottom: 10px
+}
+
+.chat-widget .chat-form textarea {
+    resize: none
+}
+
+.chat-widget .form-control:focus,
+.chat-widget .btn:focus {
+    box-shadow: none
+}
+
+.chat-widget .btn,
+.chat-widget .btn:focus,
+.chat-widget .btn:hover {
+    background-color: #215eac;
+    border: #215eac
+}
+
+.chat-widget #check {
+    display: none !important
+}
+.chat-widget .search-area{
+    border-bottom: 1px solid #ddd;
+}
+.chat-widget .has-search .form-control,.full-page-widget .has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.chat-widget .has-search .form-control-feedback,.full-page-widget .has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+.chat-widget .profile-letter-image,.full-page-widget .profile-letter-image,.messages-thread .profile-letter-image{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #215eac;
+    font-size: 20px;
+    color: #fff;
+    text-align: center;
+    line-height: 50px;
+    margin-right: 10px;
+}
+.chat-widget .user-list,.chat-widget .user-list-section,.full-page-widget .user-list-section-full-page{
+    width: 100%;
+    float: left;
+}
+.chat-widget .user-list ul, .full-page-widget .user-list-full-page ul,.messages-thread ul{
+    list-style: none;
+    float: left;
+    padding: 0;
+    width: 100%;
+    overflow-y: auto;
+    height: 280px;
+    text-align: center;
+}
+.chat-widget .user-list ul li,.full-page-widget .user-list-full-page ul li,.messages-thread ul li{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    padding: 5px 15px;
+    cursor: pointer;
+    position: relative;
+}
+.chat-widget li.new-conversation:after, .full-page-widget li.new-conversation:after{
+    content: 'New';
+    background: #ddd;
+    border-radius: 20px;
+    padding: 0px 7px;
+    font-size: 11px;
+    font-weight: 600;
+    position: absolute;
+    right: 5px;
+}
+.chat-widget .user-list ul li p, .full-page-widget .user-list-full-page ul li p, .messages-thread ul li p{
+    margin: 0px;
+}
+.chat-widget .user-chat-header p, .full-page-widget .user-chat-header-full-page p{
+    margin: 0px;
+}
+.chat-widget .user-messages ul, .full-page-widget .user-messages-full-page ul, .messages-section ul{
+    list-style: none;
+    float: left;
+    padding: 0;
+    width: 100%;
+    overflow-y: auto;
+    height: 280px;
+    background-color: #ddd;
+    margin: 0px;
+    text-align: center;
+}
+.chat-widget .user-messages .right, .full-page-widget .user-messages-full-page .right, .messages-section .right{
+    justify-content: flex-end;
+    flex-direction: row;
+    display: flex;
+    padding: 5px;
+}
+.chat-widget .user-messages .right p,.chat-widget .user-messages .left p, .full-page-widget .user-messages-full-page .left p, .full-page-widget .user-messages-full-page .right p,.messages-section .right p, .messages-section .left p{
+    background: #fff !important;
+    color: #000;
+    min-width: 50%;
+    width: auto;
+    max-width: 80%;
+    border-radius: 7px;
+    position: relative;
+    text-align: left;
+    padding: 10px 45px 10px 5px;
+}
+.chat-widget .user-messages .left,.full-page-widget .user-messages-full-page .left,.messages-section .left{
+    justify-content: flex-start;
+    flex-direction: row;
+    display: flex;
+    padding: 5px;
+}
+.chat-widget .user-chat-section, .full-page-widget .user-chat-section-full-page{
+    display: none;
+    width: 100%;
+    float: left;
+}
+.chat-widget .expand-widget{
+    cursor: pointer;
+    color: #fff;
+    text-decoration: none;
+}
+.chat-widget .expand-widget:hover{
+    color: #fff;
+    text-decoration: none;
+}
+.chat-widget .expand-widget .fa-compress{
+    display: none;
+}
+.chat-widget .header h6{
+    line-height: 22px;
+}
+.chat-widget .unread-message-count, .full-page-widget .unread-message-count{
+    margin-left: auto;
+    background: #215eac;
+    padding: 0px 5px;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 11px;
+}
+.all-message-count{
+    position: absolute;
+    right: -8px;
+    top: 35px;
+    background: #000;
+    padding: 0 7px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+.file-attachment-box,.file-attachment-box-full-page{
+    position: fixed;
+    right: 20px;
+    bottom: 100px;
+    width: 340px;
+    background-color: #fff;
+    border-radius: 5px;
+    display: none;
+    transition: all 0.4s;
+    border: 1px solid #ddd;
+}
+.file-attachment-box ul,.file-attachment-box-full-page ul{
+    height: 340px;
+    overflow-y: auto;
+}
+.file-attachment-box .card,.file-attachment-box-full-page .card{
+    padding: 10px;
+}
+.file-attachment-box ul li,.file-attachment-box-full-page ul li{
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    padding-left: 0px;
+}
+.file-attachment-box ul li label,.file-attachment-box-full-page ul li label{
+    margin: 0;
+    margin-left: 10px;
+    width: 100%;
+    cursor: pointer;
+}
+.chat-widget .list-group-flush>.list-group-item:last-child,.full-page-widget .list-group-flush>.list-group-item:last-child{
+    border-bottom-width: 1px;
+}
+.file-attachment-box .card-body,.file-attachment-box-full-page .card-body{
+    padding: 0;
+    padding-top: 5px;
+}
+.file-attachment-box button,.file-attachment-box-full-page button{
+    margin: 0;
+    width: 100%;
+}
+#fileAttachmentBtn,#fileAttachmentBtnFullPage{
+    position: relative;
+}
+#fileAttachmentBtn .fileAttachmentCount,#fileAttachmentBtnFullPage .fileAttachmentCountFullPage{
+    position: absolute;
+    top: -5px;
+    right: 0px;
+    font-size: 11px;
+    padding: 0 5px;
+    background: #2f5baa;
+    color: #fff;
+    border-radius: 20px;
+}
+.chat-widget i{
+    margin-right: 10px;
+}
+.chat-widget .full-page-icon{
+    color: #fff;
+}
+.user-messages .msg-date, .user-messages-full-page .msg-date{
+    font-size: 11px;
+    color: #777;
+}
+.user-messages .msg-time, .user-messages-full-page .msg-time{
+    font-size: 9px;
+    color: #777;
+    position: absolute;
+    bottom: 0px;
+    right: 5px;
+}
+.chat-widget .user-messages .right p,.full-page-widget .user-messages-full-page .right p {
+    background: #579ffb !important;
+    color: #fff;
+    border-bottom-right-radius: 0;
+}
+.chat-widget .user-messages .left p,.full-page-widget .user-messages-full-page .left p{
+    border-bottom-left-radius: 0;
+}
+.chat-widget .user-messages .right p span.msg-time,.full-page-widget .user-messages-full-page .right p span.msg-time{
+    color: #fff;
+}
+.user-messages .msg-date, .user-messages-full-page .msg-date{
+    display: block;
+}
+.user-messages .msg-user, .user-messages-full-page .msg-user{
+    display: block;
+    text-align: left;
+    font-size: 11px;
+    color: #777;
+    padding-left: 5px;
+}

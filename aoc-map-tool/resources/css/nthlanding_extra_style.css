@@ -1,0 +1,102 @@
+input.error,
+select.error,textarea.error {
+    border: 1px dashed red;
+    font-weight: 300;
+    color: red;
+}
+.error, .old-error {
+    color: red;
+}
+#cover-spin {
+    position:fixed;
+    width:100%;
+    left:0;right:0;top:0;bottom:0;
+    background-color: rgba(255,255,255,0.5);
+    z-index:9999;
+    display:none;
+}
+
+#cover-spin::after {
+    content:'';
+    display:block;
+    position:absolute;
+    left:48%;top:40%;
+    width:40px;height:40px;
+    border-style:solid;
+    border-color:#215eac;
+    border-top-color:transparent;
+    border-width: 4px;
+    border-radius:50%;
+    -webkit-animation: spin .8s linear infinite;
+    animation: spin .8s linear infinite;
+}
+
+
+.singlebox-container {
+    min-height: 200px;
+}
+
+.result-filter  .multiselect {
+    max-width: 130px;
+}
+.result-filter #city, .result-filter #mile_radius {
+    max-width: 100px;
+}
+ul.applied-filters{
+    list-style-type: none;
+    
+}
+ul.applied-filters li{
+    padding:3px;
+    
+}
+ul#box-contents {
+    padding: 0px;
+    display: flex;
+    flex: 3;
+    flex-wrap: wrap;
+}
+
+ul#box-contents li {
+    list-style: none;
+}
+
+li.singlebox-container {
+    width: 50%;
+    border: 2px solid;
+}
+
+.btn-green {
+    background-color: green !important;
+    color: white;
+}
+/* Container for the error message */
+.error-message {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: black;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+/* Close button */
+.error-message .close-btn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 16px;
+}
+
+.error-message .close-btn:hover {
+    color: #ccc;
+}

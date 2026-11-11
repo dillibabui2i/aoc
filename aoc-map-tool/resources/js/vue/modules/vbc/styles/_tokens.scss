@@ -1,0 +1,51 @@
+// Design tokens for the whole VBC module. Every colour/size the module uses is
+// named here, so a change lands in one place instead of being hunted across
+// components. Values match the All Hospitalizations page, which is the reference.
+
+$font: 'Roboto', sans-serif;
+
+// Primary action (buttons, status badge)
+$primary: #2f5baa;
+$primary-border: #6cb2eb;
+$primary-hover: #227cc7;
+$primary-hover-border: #2076bc;
+$accent: #2563eb; // links / active tab / icon accents
+
+$text: #212529;
+$text-muted: #6c757d;
+$border: #dee2e6;
+$surface: #fff; // card fill (activity log entries)
+$surface-muted: #f1f3f5; // panel fill (notes sidebar)
+$field-disabled: #e9ecef; // read-only field fill
+
+// Tab strip: solid blue buttons, active one called out in yellow.
+$tab-bg: $primary;
+$tab-border: $primary-border;
+$tab-text: #fff;
+$tab-text-active: #ffff00;
+
+// Field-level feedback: red is the design system's $color-danger (what UiSelect's
+// own error text uses); green is its $color-success, for "field saved" notices.
+$danger: #dc2626;
+$success: #15803d;
+
+// Standard AOC "overdue record" row highlight — matches `tr.dashboard-older-record` in the legacy
+// dashboards (resources/css/myaccount.css), so overdue rows look the same across the whole app.
+$overdue-bg: #f9c2c2;
+
+$control-height: 38px;
+$text-base: 15px;
+$text-sm: 13px;
+$text-title: 22px;
+
+// Dropdowns that must not wrap their content (client search, multiselects).
+$dropdown-max-width: 480px;
+
+// Manage Immunization Schedule: dose-age chips / state tag, and Active / Inactive status badge.
+$chip-bg: #cfeafb;
+$chip-text: #1f6fa8;
+$badge-active-bg: #d7f5c8;
+$badge-active-text: #3c9b1a;
+$badge-inactive-bg: #f1f3f5;
+$badge-inactive-text: #6c757d;
+$badge-inactive-border: #ced4da;

@@ -1,0 +1,245 @@
+// Central stylesheet for the VBC module. Imported once from modules/vbc/mount.js,
+// so it is compiled and shipped a single time.
+//
+// It is deliberately NOT scoped to a component: the design-system modals teleport
+// their markup to <body>, outside any component's scoped subtree, so rules that
+// have to reach them can only be global. To stay out of the legacy pages' way,
+// everything here is nested under one of three roots:
+//
+//   .v-app       — the in-page container the Blade views wrap Vue mounts in
+//   .vbc-modal   — added via UiModal's `css-class` on every VBC modal
+//   .vbc-filters — the filter bars
+//
+// Component-level `<style scoped>` blocks are still the right home for layout
+// that belongs to one component (its own grid, widths, scroll regions). What
+// belongs here is anything shared, and anything that must cross the teleport.
+//
+// NOTE ON THE DOUBLED ROOT CLASSES (`.v-app.v-app`) below: @angels-of-care/ui
+// ships scoped styles, which compile to `.ui-btn[data-v-hash]` — two units of
+// specificity. A single-class ancestor here would only tie with that, leaving the
+// winner down to stylesheet order. Repeating the root class buys one more class
+// and makes these overrides win deterministically. It is not cosmetic; without it
+// the module falls back to the design system's own look.
+
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+// ---------------------------------------------------------------------------
+// Module-wide: applies both in-page and inside teleported modals
+// ---------------------------------------------------------------------------
+.v-app.v-app,
+.vbc-modal.vbc-modal {
+    @include module-typography;
+    @include primary-button;
+    @include readonly-fields;
+}
+
+// ---------------------------------------------------------------------------
+// Filter bars (All Hospitalizations + the dashboard buckets)
+// ---------------------------------------------------------------------------
+.vbc-filters {
+    font-family: $font;
+    margin-bottom: 16px;
+    margin-top: 5px;
+
+    &__row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 10px;
+    }
+
+    &__add-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+
+        .fa {
+            color: $accent !important;
+            font-size: $text-title !important;
+            margin-right: 0 !important;
+        }
+    }
+
+    &__me-mode {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: $text-sm;
+        cursor: pointer;
+        white-space: nowrap;
+        margin: 0 4px 0 0;
+    }
+
+    &__search-row {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    &__search-label {
+        font-size: $text-sm;
+        color: #64748b;
+    }
+
+    &__date-range {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+}
+
+// Design-system overrides inside the filter bars — doubled root, see note above.
+.vbc-filters.vbc-filters {
+    @include primary-button;
+    @include multiselect;
+
+    .ui-select,
+    .ui-input,
+    .ui-btn {
+        font-family: $font;
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Bucket info line (Responsible Party / Description / Timeline) — ICM dashboard buckets
+// ---------------------------------------------------------------------------
+.vbc-bucket-info {
+    font-family: $font;
+    font-size: $text-sm;
+    color: $text;
+    margin: 0 0 10px;
+    text-align: left;
+}
+
+// ---------------------------------------------------------------------------
+// Overdue row highlight (AC11-13/16-17/22) — bucket tables pass this via UiTable's `row-class` prop.
+// `!important` matches the legacy `tr.dashboard-older-record` rule it mirrors (myaccount.css):
+// `.ui-table`'s own `tr:hover td` would otherwise win on hover since both rules tie on specificity.
+// ---------------------------------------------------------------------------
+.v-app.v-app tr.vbc-row--overdue td {
+    background-color: $overdue-bg !important;
+}
+
+// ---------------------------------------------------------------------------
+// Top-level bucket card (outside `.v-app`, so it needs its own class): Bootstrap's `.accordion > .card`
+// is `overflow: hidden`, which clips the filter dropdowns when the bucket is empty and the card is only
+// as tall as the filter bar. `.collapsing` (the open/close animation) keeps its own overflow rule.
+// ---------------------------------------------------------------------------
+.accordion > .card.vbc-bucket-card {
+    overflow: visible;
+}
+
+// ---------------------------------------------------------------------------
+// Modals
+// ---------------------------------------------------------------------------
+.vbc-modal.vbc-modal {
+    // Fields inside a VBC modal are laid out on a grid, so they stack.
+    @include stacked-fields;
+    @include multiselect;
+
+    .modal-title {
+        font-size: $text-title;
+        font-weight: 600;
+        color: $text;
+    }
+
+    .modal-body {
+        color: $text;
+    }
+
+    // Bootstrap's `.row` is 30px wider than its container (it carries negative
+    // gutters meant to be cancelled by a padded `.container`). Inside a scrolling
+    // panel that overhang shows up as a stray horizontal scrollbar, so the gutters
+    // are replaced with a flex gap, which can't overflow.
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+        gap: 12px 24px;
+    }
+
+    .row > [class*='col'] {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    // Exception to `stacked-fields` above: the outcome bar is a short row of
+    // controls, not a form grid, so its labels sit beside their selects. Nested
+    // one level deeper than the stacking rule on purpose, so it wins on
+    // specificity rather than on source order.
+    .outcome-bar__controls {
+        .ui-select-wrap {
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+            width: auto;
+        }
+
+        label {
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .ui-select {
+            width: 260px;
+        }
+    }
+}
+
+// The legacy app-wide `.modal-dialog { max-width: 60% }` (resources/css/extra_style.css) stretches
+// every modal by default — Contact Details has few enough fields that it should stay compact instead,
+// matching the design's near-square proportions. `.vbc-modal.vbc-modal` alone would still lose to that
+// rule on source order (same specificity), so a third class is added here for it to win outright.
+.vbc-modal.vbc-modal.contact-details-modal .modal-dialog {
+    max-width: 600px;
+}
+
+// Same reasoning as Contact Details above — Diagnosis Details has one extra field per row (Rank/Clinical
+// Status/Verification Status), so it gets a little more width, still nowhere near the legacy 60%.
+.vbc-modal.vbc-modal.diagnosis-details-modal .modal-dialog {
+    max-width: 700px;
+}
+
+// Same reasoning as Contact Details above — Training/Education has the same field count (two selects,
+// one textarea, one toggle), so it gets the same compact width instead of the full-width `size="w60"`
+// the component previously set.
+.vbc-modal.vbc-modal.education-details-modal .modal-dialog {
+    max-width: 600px;
+}
+
+// Add/Edit Immunization Schedule: the dose-target rows need more width than the compact modals above, but
+// not the legacy 60% either. Third class for the same source-order reason as `contact-details-modal`.
+.vbc-modal.vbc-modal.immunization-schedule-modal .modal-dialog {
+    max-width: 760px;
+}
+
+// Footer per Figma: a divider above it, Submit and Close both primary and the same width, Active toggle green.
+// The toggle is the shared HospitalizationTracker/ToggleSwitch (blue in the other modals), so it is recoloured here.
+.vbc-modal.vbc-modal.immunization-schedule-modal {
+    .modal-footer {
+        margin: 0 20px;
+        padding: 16px 0 8px;
+        border-top: 1px solid $border;
+        gap: 20px;
+
+        // `.modal-footer > *` (bootstrap) gives every child a margin; the auto right margin pushes the
+        // buttons to the right edge, leaving Active on the left.
+        > .schedule-form__active {
+            margin: 0 auto 0 0;
+        }
+
+        .ui-btn {
+            min-width: 120px;
+            margin: 0;
+            justify-content: center;
+            text-align: center;
+        }
+    }
+
+    .toggle-switch__input:checked + .toggle-switch__track {
+        background: $success;
+    }
+}

@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/*
+ * All Vue-island styles live inside .v-app
+ * to avoid conflicts with legacy jQuery/Bootstrap styles.
+ */
+.v-app {
+    /* Reset box model inside Vue islands */
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+}

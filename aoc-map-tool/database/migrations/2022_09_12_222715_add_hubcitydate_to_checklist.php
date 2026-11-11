@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class AddHubcitydateToChecklist extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('NeedToHire_Checklist', function (Blueprint $table) {
+            $table->dateTime('HUBcityStarted')->after('HUBcity')->nullable();
+            $table->dateTime('HUBcityWorked')->after('HUBcityStarted')->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+
+    }
+}

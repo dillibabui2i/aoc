@@ -1,0 +1,750 @@
+.clear {
+    clear: both;
+    margin-top: 20px;
+}
+
+#searchResult {
+    list-style: none;
+    padding: 0px;
+    width: 250px;
+    position: absolute;
+    margin: 10px 0px;
+    z-index: 99999 !important;
+}
+
+#searchResult li {
+    background: #d2d2d2;
+    padding: 4px;
+    margin-bottom: 1px;
+}
+
+#searchResult li:hover {
+    cursor: pointer;
+}
+
+.modal-dialog {
+    max-width: 60%;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+    text-align: left;
+}
+
+#nrr-popup .modal-dialog {
+    max-width: 98%;
+}
+
+.modal-header .close {
+    padding-top: 0;
+    padding-bottom: 0;
+    top: 0px;
+    position: relative;
+    right: 5px;
+    z-index: 10;
+}
+
+.modal-header {
+    padding: 0;
+    border: none;
+}
+
+.modal-body {
+    overflow: auto;
+}
+
+.card-header {
+    font-size: 20px;
+    font-weight: 600;
+    background: transparent;
+    padding: 0;
+    padding-bottom: 5px;
+}
+
+.card-body {
+    padding: 10px;
+}
+
+.card-body tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.card-body td {
+    padding: 5px 0px;
+}
+
+.data-table-container {
+    width: 100%;
+}
+
+.form-group,
+.form-group label {
+    display: flex;
+}
+
+.form-group label {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 40px;
+    margin-right: 10px;
+    width: 40%;
+    text-align: left;
+}
+
+.form-group div span {
+    vertical-align: middle;
+    line-height: 40px;
+}
+
+#ReportsFilterSearchForm .multiselect-container.dropdown-menu.show {
+    overflow-y: auto  !important;
+}
+#ReportsFilterSearchForm .multiselect-selected-text {
+    line-height: 0px !important;
+}
+#ReportsFilterSearchForm.form-check label {
+	display: block !important;
+}
+
+#ReportsFilterSearchForm .form-group label.filter-label {
+    width: 14%;
+}
+
+#ReportsFilterSearchForm .form-group div.col-auto {
+    padding: 0px;
+    margin-right: 5px;
+}
+
+#ReportsFilterSearchForm .form-group div.col-auto span {
+    line-height: 40px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+#ReportsFilterSearchForm .input-group-prepend {
+    margin-right: -5px;
+    height: 37px;
+}
+
+#ReportsFilterSearchForm .input-daterange .input-group {
+    width: 46%;
+    float: left;
+}
+
+#ReportsFilterSearchForm .todiv {
+    vertical-align: middle;
+    line-height: 36px;
+}
+
+#ReportsFilterSearchForm .input-daterange {
+    width: 33%;
+}
+
+.multiselect-option.dropdown-item span, span.multiselect-native-select, .multiselect-all span {
+    line-height: 0px !important;
+}
+
+.multiselect-native-select .show {
+    display: inline-block !important;
+}
+
+.multiselect-native-select .btn-group {
+    max-width: 170px;
+}
+#addNTHForm .multiselect-native-select .btn-group{
+    max-width: 100% !important;
+}
+
+#ReportsFilterSearchForm .form-group input[type=radio] {
+    vertical-align: middle;
+}
+
+#ReportsFilterSearchForm .col-md-3 {
+    flex: 0 0 22%;
+}
+
+#ReportsFilterSearchForm .filters-container .form-group label.filter-label {
+	width: 4%;
+}
+#ReportsFilterSearchForm .form-group div.col-auto {
+	padding: 0px;
+	margin-right: 5px;
+}
+#ReportsFilterSearchForm .form-group div.col-auto span {
+	line-height: 40px;
+	margin-right: 5px;
+	vertical-align: middle;
+}
+#ReportsFilterSearchForm .form-group input[type=radio] {
+	vertical-align: middle;
+}
+#ReportsFilterSearchForm .col-md-3 {
+	flex: 0 0 22%;
+}
+
+.right-side {
+    display: block;
+}
+
+.heading-title {
+    text-align: left;
+    margin-bottom: 50px;
+}
+
+.row-pinbar i {
+    color: #d00000;
+    transform: rotate(45deg);
+    margin-left: 5px;
+}
+
+#clicked-tags li i {
+    right: -7px;
+    position: absolute;
+    color: #2f5baa;
+    display: none !important;
+    top: 30%;
+    font-size: 12px;
+}
+
+#clicked-tags li:hover i {
+    cursor: pointer;
+    display: block !important;
+}
+
+ul#clicked-tags li {
+    width: 15%;
+    display: inline-block;
+    text-align: center;
+    border: 1px solid;
+    margin-right: 10px;
+    background: #6cb2eb;
+    color: #fff;
+    padding: 5px;
+    font-weight: 600;
+    border-radius: 7px;
+    margin-bottom: 5px;
+    position: relative;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+ul#clicked-tags {
+    width: 55%;
+    float: right;
+    list-style: none;
+    text-align: right;
+}
+
+#isExistMap {
+    width: 25px;
+}
+
+.hide {
+    display: none !important;
+}
+
+.rolesform div#accordion ul {
+    list-style: none;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+}
+
+.rolesform div#accordion ul li {
+    width: 25%;
+    margin: 8px 20px;
+    display: inline-block;
+    vertical-align: text-top;
+}
+
+.rolesform div#accordion .ui-accordion-header {
+    text-align: left;
+}
+
+.rolesform div#accordion .ui-state-active {
+    background-color: #2f5baa;
+    border: 1px solid #2f5baa;
+}
+.w-15{
+    width: 15% !important;
+}
+.w-10{
+    width: 10% !important;
+}
+.respiteTerminalPlayer.ui-autocomplete,.terminalPlayer.ui-autocomplete{
+    max-height: 120px;
+    overflow-y: auto;
+}
+.clientName.ui-autocomplete{
+    max-height: 250px;
+    overflow-y: auto;
+}
+.add-nth-form .custom-control-input{
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+}
+@media screen and (max-width: 820px) {
+    ul#clicked-tags {
+        width: 100%;
+        padding: 0;
+    }
+    ul#clicked-tags li {
+        width: 30%;
+    }
+}
+
+.extra-sidemenu {
+    color: #fff !important;
+    font-size: 10px !important;
+    padding: 15px 5px 0 7px !important;
+}
+
+.extra-sidemenu a:hover {
+    color: #fff !important;
+}
+
+.extra-sidemenu-pipe {
+    color: #fff !important;
+}
+
+.datatable-filter-cnt select {
+    width: 160px;
+}
+
+.w35 {
+    width:35%;
+}
+
+.w25 {
+    width:25%;
+}
+
+.tbl-heading {
+    background-color: #215eac;
+    color: #fff;
+}
+
+td.showhand {
+    cursor: pointer;
+}
+
+table.nrrreports tr.hidden {
+    display: none;
+}
+table.nrrreports tr.parent3.hidechild.hidden {
+    display: table-row !important;
+}
+
+.skilset span.multiselect-native-select {
+    display: block;
+}
+/* client profile page*/
+.nthrecords-log {
+    background: #dfe6ed;
+}
+
+.clear {
+    clear: both;
+}
+
+.nthrecords-datetime-history {
+    text-align: right;
+    font-size: 14px;
+}
+
+.nthrecords-comment-title {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.nthschedule-content-container {
+    background-clip: padding-box;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    color: #495057;
+    display: block;
+    font-size: .9rem;
+    font-weight: 400;
+    line-height: 1.6;
+    padding: 0.375rem 0.75rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    width: 100%;
+    height: auto;
+}
+.tag-red {
+    background-color: #D3455B !important;
+}
+.tag-grey {
+    background-color: #788896 !important;
+}
+#schedule_next_form .multiselect-native-select .btn-group {
+    max-width: inherit !important;
+}
+#schedule_next_form .multiselect-container.dropdown-menu.show {
+    width: 100% !important;
+}
+.nrrreport-main td.showhand {
+    cursor: pointer;
+ }
+ .nrrreport-main .table-responsive{
+     overflow-x: inherit;
+     z-index: 99;
+ }
+ .sticky .nrrreport-main tbody{
+     width: 100%;
+     position: relative;
+ }
+ .sticky .nrrreport-main .table thead tr:first-child,  .sticky .nrrreport-main .top-sticky-container {
+     position: sticky;
+     background-color: #ffffff;
+    z-index: 999;
+    min-height: 290px;
+ }
+ .sticky .nrrreport-main .table thead tr:first-child{
+    top: 123px;
+     background: #fff;
+     width: 100%;
+ }
+ .sticky .nrrreport-main .top-sticky-container {
+     top:0px;
+     width:102%;
+     height: 210px;
+ }
+ .nrrreport-main #ReportsFilterSearchForm {
+     margin-top: 15px;
+ }
+ .candidates.sticky .nrrreport-main .table thead tr:first-child,.IPEAs.sticky .nrrreport-main .table thead tr:first-child, .PEPIs.sticky .nrrreport-main .table thead tr:first-child, .WEPIs.sticky .nrrreport-main .table thead tr:first-child
+ , .candidateMatch.sticky .nrrreport-main .table thead tr:first-child, .hoursRemoved.sticky .nrrreport-main .table thead tr:first-child, .candidateStarts.sticky .nrrreport-main .table thead tr:first-child, .grossMargin.sticky .nrrreport-main .table thead tr:first-child, .IpeaConversion.sticky .nrrreport-main .table thead tr:first-child, .IpeaConversionCounts.sticky .nrrreport-main .table thead tr:first-child  {
+    top: 210px;
+}
+
+table.dataTable tbody td.action {
+    display: flex;
+    font-size: 0px;
+}
+
+#closeSocialMediaAds .multiselect-native-select .btn-group {
+    width: 100%;
+    max-width: inherit;
+}
+#closeSocialMediaAds .multiselect-native-select {
+    width: 100%;
+}
+#closeSocialMediaAds .w50 {
+    width: 50%;
+}
+
+#closeSocialMediaAds .modal-content, #addNthSchedulePopup .modal-content {
+    min-height: 380px;
+}
+
+.multiselect-container.dropdown-menu.show {
+    overflow-y: auto;
+    z-index: 1500;
+    height: 200px!important;
+}
+
+.recruiterScorecardForm .showbasedonrecruiter {
+    display: none;
+}
+
+.recruiterScorecardForm table.table-bordered, .recruiterScorecardForm table.table-bordered td, .recruiterScorecardForm table.table-bordered th{
+    border: 1px solid #dee2e6 !important;
+}
+
+.recruiterScorecardForm table.table-bordered thead {
+    background-color: #2f5baa;
+    color: #ffffff;
+}
+
+.recruiterScorecardForm table.table-bordered tfoot {
+    background-color: #dee2e6;
+}
+
+.filters-container .form-group{
+    flex-wrap: wrap;
+}
+
+#cover-spin {
+    position:fixed;
+    width:100%;
+    left:0;right:0;top:0;bottom:0;
+    background-color: rgba(255,255,255,0.7);
+    z-index:9999;
+    display:none;
+}
+
+@-webkit-keyframes spin {
+	from {-webkit-transform:rotate(0deg);}
+	to {-webkit-transform:rotate(360deg);}
+}
+
+@keyframes spin {
+	from {transform:rotate(0deg);}
+	to {transform:rotate(360deg);}
+}
+
+#cover-spin::after {
+    content:'';
+    display:block;
+    position:absolute;
+    left:48%;top:40%;
+    width:40px;height:40px;
+    border-style:solid;
+    border-color:black;
+    border-top-color:transparent;
+    border-width: 4px;
+    border-radius:50%;
+    -webkit-animation: spin .8s linear infinite;
+    animation: spin .8s linear infinite;
+}
+
+.socialmediapl{
+    padding-left: 31px;
+}
+
+#addSuppliesRequestForm .removebtn{
+    padding-top: 8px;
+}
+
+.satisfaction-rating, .weeklysatisfaction-rating {
+    position: relative;
+    display: flex;
+    flex-direction:row-reverse;
+    margin-top: 10px;
+    border: 1px solid #fff;
+    box-sizing: border-box;
+    background: linear-gradient(to right, #f00, #ff0, #0f0);
+    width: 500px;
+}
+
+.satisfaction-rating input[type="radio"],.weeklysatisfaction-rating input[type="radio"] {
+    display: none;
+}
+
+.satisfaction-rating input[type="radio"]:hover ~ label, .satisfaction-rating input[type="radio"]:checked ~ label, .weeklysatisfaction-rating input[type="radio"]:hover ~ label, .weeklysatisfaction-rating input[type="radio"]:checked ~ label{
+    background: transparent;
+}
+.satisfaction-rating label, .weeklysatisfaction-rating label {
+    display: flex;
+    cursor: pointer;
+    width: 50px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    transition: 0.5s;
+    background: #fff;
+    color: #000;
+    font-size: 20px;
+    border: 1px solid #000;
+    margin: 0px;
+}
+
+.yellowexception {
+    background-color: #FFE699 !important;
+}
+
+.redexception {
+    background-color: #f9c2c2 !important;
+}
+#schedule_class_form .multiselect-container .multiselect-group.dropdown-item [type="checkbox"]{
+    margin-top: 14px;
+}
+#schedule_class_form .multiselect-container .multiselect-group.dropdown-item [type="checkbox"]  + label{
+    font-weight: bold;
+}
+#pet{
+    margin-bottom: 8px;
+}
+.recruiting #Recruiter{
+    margin-bottom: 10px;
+}
+.recruiting #Bonus_Status{
+    margin-bottom: 10px;
+}
+.recruiting #datatableFilterSearch{
+    margin-bottom: 11px;
+}
+.recruiting .clearall{
+    margin-bottom: 11px;
+}
+.recruiting .excludeprn{
+    margin-bottom: 11px;
+}
+#schedule_class_form #ui-datepicker-div {
+    position: absolute !important;
+    left: 29% !important;
+    top: 80% !important;
+    box-shadow: 0px 0px 3px 0px;
+}
+#addCoverageShiftTrackerForm #ui-datepicker-div, #saveAdsForm #ui-datepicker-div, #addTriageCallForm #ui-datepicker-div, #accordionExample #ui-datepicker-div,#datatableFilterSearchForm #ui-datepicker-div, #add-form-validate #ui-datepicker-div {
+    position: absolute !important;
+    left: auto !important;
+    top: auto !important;
+    box-shadow: 0px 0px 3px 0px;
+}
+.client-selection-for-gp{
+    border: 1px solid #ddd;
+    height: 300px;
+    overflow-y: scroll;
+}
+.client-selection-for-gp.ui-menu .ui-menu-item{
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+}
+.textcolorred {
+    color: #f00 !important;
+}
+.sponsored-ad i.fa {
+    margin-right: 1px !important;
+    color:#2f5baa !important;
+    font-size: 16px !important;
+}
+
+.custom-checkbox input {
+    display: none;
+}
+
+.custom-checkbox span {
+    border: 2px solid #7e8a94;
+    float: right;
+    height: 15px;
+    width: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-checkbox input:checked+span {
+    border: 3px solid #43D8B0;
+}
+
+.custom-checkbox input:checked+span:before {
+    content: "✔";
+    color: #43D8B0;
+    font-size: 21px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+}
+
+#therapyEventForm .bilingualclass label{
+    line-height: 23px;
+}
+
+.activeUserAttendance{ font-size: 8px !important; margin: 5px; color: green; }
+.inactiveUserAttendance{ font-size: 8px !important; margin: 5px; color: red; }
+.nthList td.action a.disabled, #dataTable-paycomkantime-paycom_kantime_exception a.disabled i, .nthrecords-comment-title a.disabled { color: gray; cursor: not-allowed; }
+.btn-primary:disabled { cursor: not-allowed; }
+div#payerSourceEligibility {min-height: 200px;}
+#eligibility_form .multiselect-native-select {display: block;}
+#eligibility_form .multiselect-native-select select.error + .btn-group{border: 1px dashed red;color: red;}
+.textSuccess{ color: green; }
+
+#schoolSetupsOutcomeFormModal.my-radio-container {
+    width: 100%; /* Set preferred width of the container */
+  }
+
+  #schoolSetupsOutcomeFormModal .form-check-inline {
+    margin-right: 10px; /* Add spacing between radio buttons */
+    display:inline !important;
+  }
+
+  #schoolSetupsOutcomeFormModal .my-radio-container label:first-child{
+      line-height: 20px;
+      margin-right: 5%;
+      text-align: right;
+      width: inherit !important;
+  }
+
+.plain-select {
+    padding: 1px 9px 1px 6px;
+    border-radius: 0.25rem;
+}
+
+#nthLeadsInquiriesDetailModal .card-body thead tr {
+    background: #2f5baa !important;
+    color: #fff !important;
+}
+
+#nthLeadsInquiriesDetailModal .card-title {
+text-align: left;
+}
+
+.inquiry-outcome {
+    padding: 6px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    background-color: #757575!important;
+    color: #fff !important;
+    text-align: center;
+}
+
+#nthLeadsInquiriesDetailModal #nthdataTable, #nthLeadsInquiriesDetailModal .lead-full {
+    width: 100% !important;
+}
+.inquiry-outcome-inner {
+    padding: 3px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    background-color: #757575!important;
+    color: #fff !important;
+}
+
+#nthLeadsInquiriesDetailModal .main-detail-card {
+    background-color: #D9D9D9 !important;
+}
+
+.inquiry-outcome-body, .bg-ntp {
+    background-color: #fff !important;
+}
+.inquiry-outcome-inner-body {
+    background-color: #E6E6E6 !important;
+}
+.listdiv {
+    padding: 5px !important;
+}
+select.error + .btn-group > .multiselect {
+    border: 1px dashed red !important;
+}
+
+/* =====================================================
+   Compact overrides for legacy nrr sticky
+   Contract: .report-sticky-compact
+   ===================================================== */
+
+.sticky .nrrreport-main.report-sticky-compact .top-sticky-container {
+  height: auto;
+  min-height: unset;
+  padding-bottom: 10px;
+}
+
+/* sticky column headers */
+.sticky .nrrreport-main.report-sticky-compact thead th {
+  position: sticky;
+  top: var(--report-sticky-top);
+  background: #fff;
+}
+
+/* Cancel occurrence scope picker (resources/views/trachventclass/cancel-occurrence.blade.php) */
+.scope-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+.scope-btn.danger:hover {
+    background: color-mix(in srgb, #e3342f 10%, transparent);
+    border-color: #e3342f;
+}
+.scope-desc {
+    font-size: 11px;
+    color: #777;
+    font-weight: 400;
+    margin-top: 2px;
+}
